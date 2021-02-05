@@ -1,10 +1,8 @@
 import Header from "../../components/Header"
 import Layout from "../../components/Layout"
 import bg from "../../assets/bg3.jpg"
-import Footer from "../../components/Footer"
 import s from './style.module.css';
 import PokemonCard from "../../components/PokemonCard"
-import MenuHeader from "../../components/MenuHeader";
 
 const pokemons=[
   {
@@ -141,19 +139,12 @@ const pokemons=[
   }
 ]
 
-const HomePage = ({onChangePage}) => {
-  const handleClickButton = (page) =>{
-      console.log("Home page")
-      onChangePage && onChangePage(page);
-  }
+const HomePage = () => {
   return ( 
     <>
-         <MenuHeader/>
          <Header
             title="Pokemon Game"
             descr="This is an interesting card game about Pokemons"
-            onClickButton={handleClickButton}
-            //page='game'
          />
           <Layout
             id={1}
@@ -168,26 +159,7 @@ const HomePage = ({onChangePage}) => {
             To win, a majority of the total ten cards played (including the one card that is not placed on the board) must be of the player's card color. To do this, the player must capture cards by placing a card adjacent to an opponent's card whereupon the 'ranks' of the sides where the two cards touch will be compared. If the rank of the opponent's card is higher than the player's card, the player's card will be captured and turned into the opponent's color. If the player's rank is higher, the opponent's card will be captured and changed into the player's color instead. 
             </p>
           </Layout>
-         <Layout
-            id={2}
-            title="Cards"
-            urlBg={bg}
-          >
-            <div className={s.flex}>
-              {
-              pokemons.map(item=> 
-              <PokemonCard
-                key={item.id}
-                name={item.name}
-                img={item.img}
-                id={item.id}
-                type={item.type}
-                values={item.values}
-              />)
-              }
-            </div>
-          </Layout>
-          <Footer />
+      
     </>
   )
 }
