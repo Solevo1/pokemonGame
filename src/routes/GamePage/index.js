@@ -2,182 +2,99 @@ import Layout from "../../components/Layout";
 import s from './style.module.css';
 import {useHistory} from 'react-router-dom'
 import PokemonCard from "../../components/PokemonCard";
-import {useState} from 'react'; 
+import {useState,useEffect} from 'react'; 
+import bg from "../../assets/bg3.jpg"
+import database from "../../service/firebase"
 
-const POKEMONS=[
-  {
-    "abilities": [
-      "keen-eye",
-      "tangled-feet",
-      "big-pecks"
-    ],
-    "stats": {
-      "hp": 63,
-      "attack": 60,
-      "defense": 55,
-      "special-attack": 50,
-      "special-defense": 50,
-      "speed": 71
-    },
-    "type": "flying",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/17.png",
-    "name": "pidgeotto",
-    "base_experience": 122,
-    "height": 11,
-    "id": 17,
-    "values": {
-      "top": "A",
-      "right": 2,
-      "bottom": 7,
-      "left": 5
-    }
+const data= {
+  abilities : [ "keen-eye", "tangled-feet", "big-pecks" ],
+  base_experience : 122,
+  height : 11,
+  id : 17,
+  img : "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/17.png",
+  name : "pidgeotto",
+  stats : {
+    attack : 60,
+    defense : 55,
+    hp : 63,
+    special : 50,
+    speed : 71
   },
-  {
-    "abilities": [
-      "intimidate",
-      "shed-skin",
-      "unnerve"
-    ],
-    "stats": {
-      "hp": 60,
-      "attack": 95,
-      "defense": 69,
-      "special-attack": 65,
-      "special-defense": 79,
-      "speed": 80
-    },
-    "type": "poison",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/24.png",
-    "name": "arbok",
-    "base_experience": 157,
-    "height": 35,
-    "id": 24,
-    "values": {
-      "top": 5,
-      "right": 9,
-      "bottom": "A",
-      "left": "A"
-    }
-  },
-  {
-    "abilities": [
-      "static",
-      "lightning-rod"
-    ],
-    "stats": {
-      "hp": 35,
-      "attack": 55,
-      "defense": 40,
-      "special-attack": 50,
-      "special-defense": 50,
-      "speed": 90
-    },
-    "type": "electric",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
-    "name": "pikachu",
-    "base_experience": 112,
-    "height": 4,
-    "id": 25,
-    "values": {
-      "top": 8,
-      "right": "A",
-      "bottom": 9,
-      "left": 6
-    }
-  },
-  {
-    "abilities": [
-      "overgrow",
-      "chlorophyll"
-    ],
-    "stats": {
-      "hp": 45,
-      "attack": 49,
-      "defense": 49,
-      "special-attack": 65,
-      "special-defense": 65,
-      "speed": 45
-    },
-    "type": "grass",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-    "name": "bulbasaur",
-    "base_experience": 64,
-    "height": 7,
-    "id": 1,
-    "values": {
-      "top": 8,
-      "right": 4,
-      "bottom": 2,
-      "left": 7
-    }
-  },
-  {
-    "abilities": [
-      "blaze",
-      "solar-power"
-    ],
-    "stats": {
-      "hp": 39,
-      "attack": 52,
-      "defense": 43,
-      "special-attack": 60,
-      "special-defense": 50,
-      "speed": 65
-    },
-    "type": "fire",
-    "img": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
-    "name": "charmander",
-    "base_experience": 62,
-    "height": 6,
-    "id": 4,
-    "values": {
-      "top": 7,
-      "right": 6,
-      "bottom": 1,
-      "left": 4
-    }
-  }
-]
+  type : "flying",
+  values : {
+    bottom : 7,
+    left : 5,
+    right : 2,
+    top : "A"
+  }}
+
 const GamePage = () => {
-  const [pokemons,setPokemons]=useState(POKEMONS);
+  const [pokemons,setPokemons]=useState({});
+  useEffect(()=>{
+    database.ref('pokemons').once('value',(snapshot)=>{
+    setPokemons(snapshot.val());
+    })
+  },[]);
   const history=  useHistory(); 
-  const handleClickButton=(page)=>{
+  const handleClickButton=()=>{
        history.push('/')
     }
-  const handleChangeState=(id)=>{
-     setPokemons(prevState=>{
-       let newarr=prevState.slice();
-       newarr.forEach((element,index,arr) => {
-        if(element.id===id){
-          arr[index].active ? arr[index].active=!arr[index].active : arr[index].active=true
-        }
-      });
-       return [...newarr];
-     })
+  const handleAddPokemon = ()=>{
+    const newKey = database.ref().child('pokemons').push().key;
+    database.ref('pokemons/' + newKey).set(data);
+    database.ref('pokemons').once('value',(snapshot)=>{
+      setPokemons(snapshot.val());
+      })
   }
+  const handleChangeState=(id)=>{
+    setPokemons(prevState => {
+      return Object.entries(prevState).reduce((acc, item) => {
+          const pokemon = {...item[1]};
+          if (pokemon.id === id) {
+              pokemon.active = !pokemon.active;
+              console.log(pokemon);
+              database.ref(`pokemons/${item[0]}`).set({
+                ...pokemon
+              });
+          };
+  
+          acc[item[0]] = pokemon;
+  
+          return acc;
+      }, {});
+  });
+  }
+  
     return (
         <Layout
         id={1}
         title="Game page"
-        colorBg="green"
+        urlBg={bg}
       >
+        <div className={s.flex}>
+        <button className={s.button} onClick={handleAddPokemon}>
+            Add pokemon
+        </button>
+        </div>
+        <div className={s.flex}>
+              {
+              Object.entries(pokemons).map(([key,{name,img,id,type,values,active}])=> 
+              <PokemonCard
+                key={key}
+                name={name}
+                img={img}
+                id={id}
+                type={type}
+                values={values}
+                ChangeState={handleChangeState}
+                isActive={active===true ? true : false}
+              />)
+              }
+        </div>
+        <div className={s.flex}>
         <button className={s.button} onClick={handleClickButton}>
             Switch to home page
         </button>
-        <div className={s.flex}>
-              {
-              pokemons.map(item=> 
-              <PokemonCard
-                key={item.id}
-                name={item.name}
-                img={item.img}
-                id={item.id}
-                type={item.type}
-                values={item.values}
-                ChangeState={handleChangeState}
-                isActive={item.active===true ? true : false}
-              />)
-              }
         </div>
       </Layout>
     )
