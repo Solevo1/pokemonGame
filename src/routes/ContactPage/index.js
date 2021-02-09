@@ -7,7 +7,7 @@ const ContactPage = () => {
         title="Contact page"
         colorBg="blue"
       >
-        <a href='https://t.me/solev0i' target="_blank">Телеграм</a>
+        <a href='https://t.me/solev0i' target="_blank" rel="noreferrer">Телеграм</a>
       </Layout>
     )
 }
