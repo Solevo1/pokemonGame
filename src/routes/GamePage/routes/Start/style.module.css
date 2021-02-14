@@ -13,8 +13,12 @@
 }
 
 .flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    grid-gap: 40px;
   }
+.card {
+    width: 300px;
+    height: 380px;
+    cursor: pointer;
+}

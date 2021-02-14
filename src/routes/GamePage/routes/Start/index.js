@@ -36,34 +36,30 @@ const StartPage = () => {
   useEffect(()=>{
     firebase.getPokemonsSocket((pokemons)=>{
         setPokemons(pokemons);
-    })
+    });
+    return ()=>firebase.offPokemonsSocket();
   },[]);
   const history=  useHistory(); 
   const handleClickButton=()=>{
        history.push('/')
     }
-  const handleAddPokemon = ()=>{
-    firebase.addPokemon(data,async ()=>{
-     // await getPokemons();
-    })
-  }
-  const handleChangeState=(id)=>{
-    setPokemons(prevState => {
-      return Object.entries(prevState).reduce((acc, item) => {
-          const pokemon = {...item[1]};
-          if (pokemon.id === id) {
-              pokemon.active = !pokemon.active;
-              pokemon.isSelected=!pokemon.isSelected
-              SelectedContext.addPokemon(pokemon)
-          };
   
-          acc[item[0]] = pokemon;
-          firebase.postPokemon(item[0],pokemon);
-          return acc;
-      }, {});
-  });
+  const handleChangeState=(key)=>{
+    const pokemon ={...pokemons[key]};
+    SelectedContext.addPokemon(key,pokemon);
+    setPokemons(prevState=>(
+      {
+        ...prevState,
+        [key]:{
+          ...prevState[key],
+          selected:! prevState[key].selected,
+        }
+      }
+    ))
   }
-  
+  const handleStartGame=()=>{
+history.push('/game/board')
+  }
     return (
         <Layout
         id={1}
@@ -71,23 +67,26 @@ const StartPage = () => {
         urlBg={bg}
       >
         <div className={s.flex}>
-        <button className={s.button} onClick={handleAddPokemon}>
-            Add pokemon
+        <button className={s.button} onClick={handleStartGame} disabled={Object.keys(SelectedContext.pokemons).length<5}>
+            StartGame
         </button>
         </div>
         <div className={s.flex}>
               {
-              Object.entries(pokemons).map(([key,{name,img,id,type,values,active,isSelected}])=> 
+              Object.entries(pokemons).map(([key,{name,img,id,type,values,active,selected}])=> 
               <PokemonCard
+              className={s.card}
                 key={key}
                 name={name}
                 img={img}
                 id={id}
                 type={type}
                 values={values}
-                ChangeState={handleChangeState}
-                isActive={active===true ? true : false}
-                isSelected={isSelected===true ? true : false}
+                ChangeState={()=>{
+                  if(Object.keys(SelectedContext.pokemons).length<5 || selected)
+                  handleChangeState(key)}}
+                isActive={true}
+                isSelected={selected===true ? true : false}
               />)
               }
         </div>

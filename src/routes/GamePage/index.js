@@ -7,11 +7,18 @@ import { PokemonContext } from "../../context/pokemonContext";
 
 
 const GamePage = () => {
-  const [pokemons,setPokemons]=useState([]);
-  const handleAddPokemon= (val)=>{
-    setPokemons(prevstate=>{
-      prevstate.push(val);
-      return [...prevstate]
+  const [pokemons,setPokemons]=useState({});
+  const handleAddPokemon= (key,pokemon)=>{
+    setPokemons(prevState=>{
+      if(prevState[key]){
+        const copyState={...prevState};
+        delete copyState[key];
+        return copyState;
+      }
+      return{
+        ...prevState,
+        [key]:pokemon,
+      }
     })
   }
   console.log(pokemons)

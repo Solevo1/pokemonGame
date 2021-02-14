@@ -9,10 +9,10 @@ const firebaseConfig = {
   messagingSenderId: "461245803639",
   appId: "1:461245803639:web:0582c67a6d004fb3c06a72"
 };
+firebase.initializeApp(firebaseConfig);
 
 class Firebase {
   constructor() {
-    firebase.initializeApp(firebaseConfig);
     this.fire=firebase;
     this.database=this.fire.database();
   }
@@ -25,6 +25,9 @@ class Firebase {
   addPokemon = (data,cb)=>{
     const newKey = this.database.ref().child('pokemons').push().key;
     this.database.ref('pokemons/' + newKey).set(data).then(()=>cb());
+  }
+  offPokemonsSocket=()=>{
+    this.database.ref('pokemons').off()
   }
   getPokemonsSocket=(cb)=>{
     this.database.ref('pokemons').on('value',(snapshot)=>{
