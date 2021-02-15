@@ -1,6 +1,6 @@
 import HomePage from "./routes/HomePage";
 import GamePage from "./routes/GamePage";
-import {useRouteMatch,Route,Switch,Redirect} from "react-router-dom";
+import {useRouteMatch,Route,Switch,Redirect, useLocation} from "react-router-dom";
 import MenuHeader from './components/MenuHeader';
 import Footer from './components/Footer';
 import cn from 'classnames';
@@ -13,6 +13,8 @@ import Firebase from "./service/firebase"
 
 
 const App = () => {
+  const location=useLocation();
+  const isPadding=location.pathname==='/' || location.pathname==='/game/board'
   const match = useRouteMatch('/')
   return (
       <FireBaseContext.Provider value={new Firebase()}>

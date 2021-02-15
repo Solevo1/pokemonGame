@@ -2,15 +2,15 @@ import s from './style.module.css';
 import backIMG from '../../assets/card-back-side.jpg';
 import cn from 'classnames';
 
-const PokemonCard = ({name,img,id,type,values,isActive=true,ChangeState,minimize,className,isSelected,possesion}) => {
+const PokemonCard = ({name,img,id,type,values,isActive=true,ChangeState,minimize,className,isSelected,possession}) => {
     const onClick = ()=>{
         ChangeState && ChangeState(id);
     }
     return  (
       <div className={cn(className,s.pokemonCard, {[s.active]:isActive},{[s.selected]:isSelected})} onClick={onClick}>
         <div className={s.cardFront}>
-            <div className={cn(s.wrap,s.front)} style={{backgroundColor:possesion}}>
-                <div className={cn(s.pokemon,s[type])}>
+            <div className={cn(s.wrap,s.front)} >
+                <div className={cn(s.pokemon,s[type],s[possession])}>
                     <div className={s.values}>
                         <div className={cn(s.count,s.top)}>{values.top}</div>
                         <div className={cn(s.count,s.right)}>{values.right}</div>

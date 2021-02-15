@@ -8,6 +8,7 @@ import { PokemonContext } from "../../context/pokemonContext";
 
 const GamePage = () => {
   const [pokemons,setPokemons]=useState({});
+  const [enemy,setEnemy]=useState({});
   const handleAddPokemon= (key,pokemon)=>{
     setPokemons(prevState=>{
       if(prevState[key]){
@@ -21,10 +22,15 @@ const GamePage = () => {
       }
     })
   }
-  console.log(pokemons)
+  const handleAddEnemies =(data)=>{
+    setEnemy(data);
+  }
+  const handleClearEnemies= ()=>{
+    setEnemy({});
+  }
   const match = useRouteMatch();
   return (
-      <PokemonContext.Provider value={{pokemons:pokemons,addPokemon:handleAddPokemon}}>
+      <PokemonContext.Provider value={{pokemons:pokemons,addPokemon:handleAddPokemon,enemies:enemy,addEnemies:handleAddEnemies,clearEnemies:handleClearEnemies}}>
       <Switch>
           <Route path={`${match.path}/`} exact component={StartPage} />
           <Route path={`${match.path}/board`} component={BoardPage} />

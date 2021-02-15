@@ -61,19 +61,23 @@ const StartPage = () => {
 history.push('/game/board')
   }
     return (
+       <>
+       <div className={s.container}>
+        <button className={s.button} onClick={handleStartGame} disabled={Object.keys(SelectedContext.pokemons).length<5}>
+            StartGame
+        </button>
+        <button className={s.button} onClick={handleClickButton}>
+            Switch to home page
+        </button>
+        </div>
         <Layout
         id={1}
         title="Game page"
         urlBg={bg}
       >
         <div className={s.flex}>
-        <button className={s.button} onClick={handleStartGame} disabled={Object.keys(SelectedContext.pokemons).length<5}>
-            StartGame
-        </button>
-        </div>
-        <div className={s.flex}>
               {
-              Object.entries(pokemons).map(([key,{name,img,id,type,values,active,selected}])=> 
+              Object.entries(pokemons).map(([key,{name,img,id,type,values,selected}])=> 
               <PokemonCard
               className={s.card}
                 key={key}
@@ -90,12 +94,8 @@ history.push('/game/board')
               />)
               }
         </div>
-        <div className={s.flex}>
-        <button className={s.button} onClick={handleClickButton}>
-            Switch to home page
-        </button>
-        </div>
       </Layout>
+      </>
     )
 }
 
